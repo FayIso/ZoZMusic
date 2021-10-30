@@ -86,10 +86,10 @@ distube.on("playSong", async (queue, song) => {
 
         if(user) {
             if(user["queueSize"] >= 5 && user["premium"] === false) {
-                distube.pause(queue);
+                if(!queue.paused) distube.pause(queue);
                 queue.textChannel.send(`\> Interuption **ZoZ® Music** pendant 30 secondes | __Conseil:__ _Aller prendre l'air !_\n\> Buy **Premium ZoZ® License** for non-stop music <:Error:888743744277463141>`);
                 setTimeout(() => {
-                    distube.resume(queue)
+                    if(queue.paused) distube.resume(queue)
                     User.updateOne({uniqueID: queue.textChannel.guild.id.toString()}, {queueSize: 1}, function (err, docs) {
                         if(err) throw err;
                     })

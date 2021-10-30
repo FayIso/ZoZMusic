@@ -54,7 +54,7 @@ module.exports = {
             });
             message.channel.send("\> **DM** <:Sucess:888743744105492541> ! ").then(msg => {
                 setTimeout(() => {
-                    message.delete()
+                    msg.delete()
                 }, 2*1000)
             })
         } else {
