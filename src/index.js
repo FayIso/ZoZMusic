@@ -1,4 +1,4 @@
-const {Client, Intents, Collection} = require("discord.js");
+const {Client, Intents, Collection, MessageEmbed} = require("discord.js");
 const { DisTube } = require("distube")
 const {prefix, token} = require("./config.json");
 const mongoose = require("mongoose");
@@ -7,7 +7,6 @@ const fs = require("fs");
 const { SpotifyPlugin } = require("@distube/spotify");
 const DeezerPlugin = require("./utils/deezer");
 const {User} = require("./store/user/User");
-const MessageEmbed = require("discord.js");
 
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.DIRECT_MESSAGES]})
 const distube = new DisTube(client, {
@@ -97,9 +96,9 @@ client.login("OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8")
                     const playEmbed = new MessageEmbed()
                      .setColor("33BBFF")
                      .setTitle("--> Et c'est repartit ! <:Song:888743744197763072>")
-                     .setDescirption(`\`Titre: ${song.name}\` - \`${song.formattedDuration}\` | Pour : ${song.user} \n <:Loop:888743744201957456> Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\``);
+                     .setDescription(`\`Titre: ${song.name}\` - \`${song.formattedDuration}\` | Pour : ${song.user} \n <:Loop:888743744201957456> Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\``);
                     
-                    queue.textChannel.send(playEmbed);
+                    queue.textChannel.send({embeds: [playEmbed]});
                 }, 30000)
             } else {
                 User.updateOne({uniqueID: queue.textChannel.guild.id.toString()}, {queueSize: user["queueSize"] + 1}, function (err, docs) {
@@ -108,9 +107,9 @@ client.login("OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8")
                 const playEmbed = new MessageEmbed()
                      .setColor("33BBFF")
                      .setTitle("<:Song:888743744197763072> Joue")
-                     .setDescirption(`\`Titre: ${song.name}\` - \`${song.formattedDuration}\` | Pour : ${song.user} \n <:Loop:888743744201957456> Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\``);
+                     .setDescription(`\`Titre: ${song.name}\` - \`${song.formattedDuration}\` | Pour : ${song.user} \n <:Loop:888743744201957456> Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\``);
 
-                queue.textChannel.send(playEmbed);
+                queue.textChannel.send({embeds: [playEmbed]});
             }
         }
 
