@@ -96,7 +96,7 @@ client.login("OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8")
                     const playEmbed = new MessageEmbed()
                      .setColor("33BBFF")
                      .setTitle("--> Et c'est repartit ! <:Song:888743744197763072>")
-                     .setDescription(`\`Titre: ${song.name}\` - \`${song.formattedDuration}\` | Pour : ${song.user} \n <:Loop:888743744201957456> Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\``);
+                     .setDescription(`Titre: \`${song.name}\` - \`${song.formattedDuration}\` | Pour : ${song.user} \n <:Loop:888743744201957456> Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\``);
                     
                     queue.textChannel.send({embeds: [playEmbed]});
                 }, 30000)
@@ -107,7 +107,7 @@ client.login("OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8")
                 const playEmbed = new MessageEmbed()
                      .setColor("33BBFF")
                      .setTitle("<:Song:888743744197763072> Joue")
-                     .setDescription(`\`Titre: ${song.name}\` - \`${song.formattedDuration}\` | Pour : ${song.user} \n <:Loop:888743744201957456> Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\``);
+                     .setDescription(`Titre: \`${song.name}\` - \`${song.formattedDuration}\` | Pour : ${song.user} \n <:Loop:888743744201957456> Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\``);
 
                 queue.textChannel.send({embeds: [playEmbed]});
             }
