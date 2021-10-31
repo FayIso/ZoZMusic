@@ -1,4 +1,6 @@
 const index = require('../index.js')
+const {MessageEmbed} = require("discord.js");
+const {footer, color, logo} = require("../utils/embedRessource");
 
 module.exports = {
     name: "skip",
@@ -20,5 +22,21 @@ module.exports = {
             }, 5*1000)
         })
         index.distube.skip(message)
+    },
+    help: (message) => {
+        let embed = new MessageEmbed()
+            .setTitle("Commande skip")
+            .setDescription("La commande **skip** permet de passer à la commande suivante")
+            .setFooter(footer)
+            .setColor(color)
+            .setThumbnail(logo)
+            .setTimestamp()
+            .addFields(
+                {name: "Aliase", value: "`*s`, `*fs`",inline: true},
+                {name: "Example", value: "`*skip`", inline: true}
+            )
+            .addField("Information", "Pour plus de commandes faites `*help`");
+
+        message.reply({embeds: [embed]});
     }
 }

@@ -1,4 +1,6 @@
 const index = require('../index.js')
+const {MessageEmbed} = require("discord.js");
+const {logo, color, footer} = require("../utils/embedRessource");
 
 module.exports = {
     name: "random",
@@ -16,5 +18,21 @@ module.exports = {
 
         index.distube.shuffle(message);
         message.channel.send(`\> 📯 La playlist est devenue aléatoire.`);
+    },
+
+    help: (message) => {
+        let embed = new MessageEmbed()
+            .setTitle("Commande random")
+            .setDescription("La commande **random** permet de mélanger la playlist")
+            .setFooter(footer)
+            .setColor(color)
+            .setThumbnail(logo)
+            .setTimestamp()
+            .addFields(
+                {name: "Example", value: "`*random`", inline: true}
+            )
+            .addField("Information", "Pour plus de commandes faites `*help`");
+
+        message.reply({embeds: [embed]})
     }
 }

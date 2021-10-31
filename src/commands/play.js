@@ -1,5 +1,7 @@
 const index = require('../index.js')
 const {db} = require("../index.js");
+const {MessageEmbed} = require("discord.js");
+const {footer, color, logo} = require("../utils/embedRessource");
 
 module.exports = {
     name: 'play',
@@ -21,5 +23,21 @@ module.exports = {
                 index.distube.play(message, args.join(" "))
             }            
         }
+    },
+    help: (message) => {
+        let embed = new MessageEmbed()
+            .setTitle("Commande play")
+            .setDescription("La commande **play** permet de jouer la musique selectionner")
+            .setFooter(footer)
+            .setColor(color)
+            .setThumbnail(logo)
+            .setTimestamp()
+            .addFields(
+                {name: "Aliase", value: "`*p`",inline: true},
+                {name: "Example", value: "`*play <nom de la musique>`", inline: true}
+            )
+            .addField("Information", "Pour plus de commandes faites `*help`");
+
+        message.reply({embeds: [embed]})
     }
 }

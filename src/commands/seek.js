@@ -21,5 +21,6 @@ module.exports = {
 
 
         index.distube.seek(message, Number(args[0]))
-    }
+    },
+    help: (message) => {}
 }

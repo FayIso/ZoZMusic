@@ -4,6 +4,11 @@ const logo = "https://i.imgur.com/xNBmr8b.png";
 const footer = "ZoZ® Music";
 
 module.exports = {
+
+    color: color,
+    logo: logo,
+    footer: footer,
+
     /*
      *Embed Play Stop Skip
      */
@@ -39,30 +44,7 @@ module.exports = {
              {name: "random", value: "mélange l'ordre de la playlist", inline: true},
              {name: "stop", value: "Deconnecte le bot", inline: true}
          )
-         .addField("Information", "Pour plus d'information rejoinez avec le lien : \nhttps://discord.gg/bvRbDg2scT")
-    },
-    helpEmbed : function() {
-        return new MessageEmbed()
-         .setTitle("Command Help")
-         .setDescription("Ecrivez `*help <nom de la commande>` pour plus d'information sur elle")
-         .setFooter(footer)
-         .setColor(color)
-         .setThumbnail(logo)
-         .setTimestamp()
-         .addFields(
-             {name: "play", value: "Joue un morceau", inline: true},
-             {name: "skip", value: "Passe au morceau suivant", inline: true},
-             {name: "pause", value: "Met en pause la musique", inline: true},
-             {name: "loop", value: "Créé un boucle", inline: true},
-             {name: "random", value: "mélange l'ordre de la playlist", inline: true},
-             {name: "stop", value: "Deconnecte le bot", inline: true},
-         )
-         .addFields(
-             {name: '\u200B', value: '\u200B' },
-             {name: "Commande Prenium", value: "", inline: false}
-
-         )
-         .addField("Information", "Pour plus d'information rejoinez avec le lien : \nhttps://discord.gg/bvRbDg2scT")
+         .addField("Information", "Pour plus d'information rejoinez avec le lien : \nhttps://discord.gg/bvRbDg2scT");
     },
     playEmbed : function() {
         return new MessageEmbed()
