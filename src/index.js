@@ -21,6 +21,7 @@ const distube = new DisTube(client, {
     })]
 })
 client.commands = new Collection();
+client.helps = new Collection();
 mongoose.connect("mongodb://127.0.0.1:27017/zoz");
 
 /**
@@ -35,6 +36,7 @@ fs.readdir("./src/commands/", (err, file) => {
         let commandName = commands.name;
         console.log(" - Loading command : " + commandName);
         client.commands.set(commandName, commands);
+        client.helps.set(commandName, commands)
         if (commands.aliases) {
             commands.aliases.forEach(alias => {
                 client.commands.set(alias, commands);

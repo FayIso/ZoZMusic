@@ -61,5 +61,6 @@ module.exports = {
             message.delete()
             return;
         }
-    }
+    },
+    help: (message) => {}
 }
