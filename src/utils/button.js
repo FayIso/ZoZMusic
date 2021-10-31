@@ -5,7 +5,7 @@ const row = new MessageActionRow().addComponents(
      Button embed play
      */
      new MessageButton()
-          .setStyle("SUCCESS")
+          .setStyle("PRIMARY")
           .setLabel("Play/Resume")
           .setCustomId("idPlay"),
           
