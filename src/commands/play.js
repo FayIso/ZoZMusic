@@ -2,6 +2,7 @@ const index = require('../index.js')
 const {db} = require("../index.js");
 const {MessageEmbed} = require("discord.js");
 const {footer, color, logo} = require("../utils/embedRessource");
+const button = require("../utils/button")
 
 module.exports = {
     name: 'play',

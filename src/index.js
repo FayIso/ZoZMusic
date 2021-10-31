@@ -4,10 +4,11 @@ const {prefix, token} = require("./config.json");
 const mongoose = require("mongoose");
 const {cron} = require("./utils/cron");
 const fs = require("fs");
+const wait = require('util').promisify(setTimeout);
 const { SpotifyPlugin } = require("@distube/spotify");
 const DeezerPlugin = require("./utils/deezer");
 const {User} = require("./store/user/User");
-const button = require("./utils/button");
+const buttons = require("./utils/button");
 
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS]})
 const distube = new DisTube(client, {
@@ -79,14 +80,28 @@ client.once("disconnect", () => {
 client.on("interactionCreate", interaction =>{
     if (interaction.isButton) {
         if (interaction.customId === "idPlay"){
-            console.log("play")
-            //require("./commands/break").run(client, button.message, )
+            
+            if(distube.getQueue(interaction.message).paused) {
+                distube.resume(interaction.message);
+                interaction.reply("Play !");
+                wait(5000);
+                interaction.deleteReply();
+            } else {
+                distube.pause(interaction.message);
+                interaction.reply("Pause !");
+                wait(5000);
+                interaction.deleteReply();
+            }
         } else if (interaction.customId === "idSkip"){
-            console.log("skip")
-            //require("./commands/skip").run(client, button.message)
+            require("./commands/skip").run(client, interaction.message);
+            interaction.reply("Skip !");
+            wait(5000);
+            interaction.deleteReply();
         } else if (interaction.customId === "idStop"){
-            console.log("stop")
-            //require("./commands/stop").run(client, button.message)
+            require("./commands/stop").run(client, interaction.message);
+            interaction.reply("Stop !");
+            wait(5000);
+            interaction.deleteReply();
         }; 
     }
 });
@@ -132,7 +147,7 @@ client.login("OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8")
                      .setTitle("<:Song:888743744197763072> Joue")
                      .setDescription(`Titre: \`${song.name}\` - \`${song.formattedDuration}\` | Pour : ${song.user} \n <:Loop:888743744201957456> Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\``);
 
-                queue.textChannel.send({embeds: [playEmbed], buttons: [button]});
+                queue.textChannel.send({embeds: [playEmbed], components: [buttons.row]});
             }
         }
 
