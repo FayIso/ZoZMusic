@@ -1,9 +1,10 @@
 const {prefix} = require("../config.json");
-const {db} = require("../index.js");
+const {Key} = require("../store/key/Key");
+const {User} = require("../store/user/User");
 
 module.exports = {
     name: "redeem",
-    aliases: ["redeem"],
+    aliases: ["red"],
     run: (client, message, args) => {
         //// PASSWORD GEN ---> START ////
         function passw(length) {
@@ -24,63 +25,63 @@ module.exports = {
         const claim = args.join(" ");
 
         if (!claim) {
-            message.channel
-                .send(`\> Usage: **${prefix}claim** + **<key>** `)
-                .then((msg) => {
-                    msg.delete({timeout: 4000});
-                });
+            message.channel.send(`\> Usage: **${prefix}claim** + **<key>** `).then(msg => {
+                setTimeout(() => {
+                    msg.delete();
+                }, 3 * 1000)
+            });
             return;
-        } else {
-            /*db.query(
-                `SELECT * FROM generate WHERE keygen = '${claim}'`,
-                async (err, req) => {
-                    if (err) throw err;
-
-                    if (req.length < 1) {
-                        message.channel.send(
-                            `\> ${message.author}, key **doesn't exist** or **already redeemed** <:Error:888743744277463141> ...`
-                        );
-                    } else {
-                        const pass = passw(5);
-                        db.query(
-                            `SELECT * FROM premium WHERE serverid = '${message.guild.id}'`,
-                            async (err, raq) => {
-                                if (raq.length < 1) {
-                                    // EXISTE PAS //
-                                    var normaldate = new Date();
-                                    var datenrl =
-                                        normaldate.getFullYear() +
-                                        "/" +
-                                        (normaldate.getMonth() + 1) +
-                                        "/" +
-                                        normaldate.getDate();
-
-                                    db.query(
-                                        `INSERT INTO premium (authorid, discord, serverid, servername, keyclaim, date) VALUES ('${message.author.id}', '${message.author.tag}', '${message.guild.id}', '${message.guild.name}', '${claim}', '${datenrl}')`,
-                                        (err, req) => {
-                                            console.log(err);
-                                            message.author.createDM().then((channel) => {
-                                                channel.send(
-                                                    `**_You are use ZoZ® Premium Key in __${message.guild.name}__ _** \n\n\> \`\`Please don't forget your pass !\`\`\n\n\> Pass : \`\`${pass}\`\`\n\n If you have question contact **ZoZ Administrator** !`
-                                                );
-                                            });
-                                        }
-                                    );
-                                    message.channel.send(
-                                        `\> ${message.author}, key successfull redeemed ! **Server have become a Premium ZoZ® Server** <:Sucess:888743744105492541> !`
-                                    );
-                                    db.query(`DELETE FROM generate WHERE keygen = '${claim}'`);
-                                } else {
-                                    message.channel.send(
-                                        `\> ${message.author}, This server are already an active **Premium ZoZ® License**`
-                                    );
-                                }
-                            }
-                        );
-                    }
-                }
-            );*/
         }
+
+        Key.findOne({key: claim}, function (err, key) {
+            if (err) throw err;
+
+            if (!key) {
+                message.channel.send(`\> ${message.author}, key **doesn't exist** or **already redeemed** <:Error:888743744277463141> ...`);
+                return;
+            }
+
+            const password = passw(10);
+
+            User.findOne({uniqueID: message.guild.id.toString()}, function (err, user) {
+                if (err) throw err;
+                if (!user) {
+                    message.reply(`\> ${message.author}, user doesn't exist <:Error:888743744277463141> ...`);
+                    return;
+                }
+
+                if (user["premium"] === true) {
+                    message.channel.send(
+                        `\> ${message.author}, This server are already an active **Premium ZoZ® License**`
+                    );
+                    return;
+                }
+
+                User.updateOne({uniqueID: message.guild.id.toString()}, {
+                    password: password,
+                    premium: true,
+                    key: claim
+                }, function (err, docs) {
+                    if (err) throw err;
+                    message.author.createDM().then((channel) => {
+                        channel.send(
+                            `**_You are use ZoZ® Premium Key in __${message.guild.name}__ _** \n\n\> \`\`Please don't forget your pass !\`\`\n\n\> Pass : \`\`${password}\`\`\n\n If you have question contact **ZoZ Administrator** !`
+                        );
+                    });
+                    message.channel.send(
+                        `\> ${message.author}, key successfull redeemed ! **Server have become a Premium ZoZ® Server** <:Sucess:888743744105492541> !`
+                    );
+                });
+
+                Key.deleteOne({key: claim}, function (err, docs) {
+                    if (err) throw err;
+                });
+
+
+            });
+
+        });
     },
-    help: (message) => {}
+    help: (message) => {
+    }
 };

@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     date: {type: Date, default: Date.now()},
     playlist: String,
     premium: {type: Boolean, default: false},
+    password: {type: String, default: ""},
     queueSize: {type: Number, default: 1}
 });
 
