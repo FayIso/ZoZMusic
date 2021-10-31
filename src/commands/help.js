@@ -19,32 +19,30 @@ module.exports = {
     aliase: ["help"],
     run: (client, message, args) => 
     {
+        let find = false;
         indexEmbed.forEach(element => {
-          if (element[0] == args) {
-            if (element[2] === "prenium") {
-              let find = false;
-              index.db.query(`SELECT * FROM premium WHERE serverid = '${message.guild.id}'`, async (err, req) =>
-              {
-                if(err) throw err;
-                if(req.length >= 1) 
-                {
-                  message.channel.send(element[1]);
-                  find = true;
+          
+            if (element[0] == args) {
+                if (element[2] === "prenium") {
+              
+                    index.db.query(`SELECT * FROM premium WHERE serverid = '${message.guild.id}'`, async (err, req) =>{
+                        if(err) throw err;
+                        if(req.length >= 1) {
+                            message.channel.send(element[1]);
+                            find = true;
+                        } else{
+                            message.channel.send(`\> This Server doesn't have a **Premium ZoZ® License**`).then(msg => { msg.delete({ timeout: 4000 })});
+                            return;
+                        }
+                    })
+                } else {
+                    message.channel.send(element[1]);
+                    find = true;
                 }
-                else
-                {
-                  message.channel.send(`\> This Server doesn't have a **Premium ZoZ® License**`).then(msg => { msg.delete({ timeout: 4000 })});
-                  return;
-                }
-              })
-            } else {
-              message.channel.send(element[1]);
-              find = true;
-            }
-          };
+            };
         });
         if (!find) {
-          message.channel.send(embedHelp.helpEmbed());
+            message.channel.send(embedHelp.helpEmbed());
         };
-      },
+    },
 };
