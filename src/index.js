@@ -1,4 +1,4 @@
-const {Client, Intents, Collection, MessageEmbed, MessageActionRow, MessageButton} = require("discord.js");
+const {Client, Intents, Collection, MessageEmbed, MessageActionRow, MessageButton, Interaction} = require("discord.js");
 const { DisTube } = require("distube")
 const {prefix, token} = require("./config.json");
 const mongoose = require("mongoose");
@@ -72,17 +72,21 @@ client.once("disconnect", () => {
 });
 
 /*
-    En cour
-*/
-client.on("clickButton", async (button) =>{
-    console.log(button)
-    if (button.id === "idPlay"){
-        require("./commands/break").run(client, button.message, )
-    } else if (button.id === "idSkip"){
-        require("./commands/skip").run(client, button.message)
-    }else if (button.id === "idStop"){
-        require("./commands/stop").run(client, button.message)
-    };
+ * En cour
+ */
+client.on("interactionCreate", interaction =>{
+    if (interaction.isButton) {
+        if (interaction.customId === "idPlay"){
+            console.log("play")
+            //require("./commands/break").run(client, button.message, )
+        } else if (interaction.customId === "idSkip"){
+            console.log("skip")
+            //require("./commands/skip").run(client, button.message)
+        } else if (interaction.customId === "idStop"){
+            console.log("stop")
+            //require("./commands/stop").run(client, button.message)
+        }; 
+    }
 });
 
 client.login("OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8")

@@ -1,24 +1,32 @@
-/*
-    Button embed play
-*/
-const buttonPlay = new MessageButton()
-     .setStyle("green")
-     .setLable("Play/Resume")
-     .setID("idPlay");
-     
-const buttonSkip = new MessageButton()
-     .setStyle("grey")
-     .setLable("Skip")
-     .setID("idSkip");
+const {MessageActionRow, MessageButton} = require("discord.js")
 
-const buttonStop = new MessageButton()
-     .setStyle("red")
-     .setLable("Stop")
-     .setID("idStop");
+const row = new MessageActionRow().addComponents(
+     /*
+     Button embed play
+     */
+     new MessageButton()
+          .setStyle("SUCCESS")
+          .setLabel("Play/Resume")
+          .setCustomId("idPlay"),
+          
+     new MessageButton()
+          .setStyle("SECONDARY")
+          .setLabel("Skip")
+          .setCustomId("idSkip"),
 
-/*
-const buttonList = new MessageButton()
-     .setStyle("blurple")
-     .setLable("Queue")
-     .setID("idList");
-*/
+     new MessageButton()
+          .setStyle("DANGER")
+          .setLabel("Stop")
+          .setCustomId("idStop"),
+
+     /*
+     new MessageButton()
+          .setStyle("blurple")
+          .setLabel("Queue")
+          .setCustomId("idList"),
+     */
+);
+
+module.exports = {
+     row: row
+}
