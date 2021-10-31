@@ -1,7 +1,7 @@
 const index = require('../index.js')
-const {db} = require("../index.js");
 const {MessageEmbed} = require("discord.js");
 const {footer, color, logo} = require("../utils/embedRessource");
+const {icons} = require("../config.json")
 
 module.exports = {
     name: 'play',
@@ -10,13 +10,13 @@ module.exports = {
 
         if(!message.member.voice.channel)
         {
-            message.channel.send('\> Veuillez être connecté sur un salon vocal <:Error:888743744277463141> !');
+            message.channel.send('\> Veuillez être connecté sur un salon vocal ' + icons.error + ' !');
         }
         else
         {
             if(args.length === 0)
             {
-                message.channel.send('\> Veuillez préciser une musique <:Error:888743744277463141> !')
+                message.channel.send('\> Veuillez préciser une musique ' + icons.error + ' !')
             }
             else
             {

@@ -1,18 +1,19 @@
 const index = require('../index.js')
 const {MessageEmbed} = require("discord.js");
 const {logo, color, footer} = require("../utils/embedRessource");
+const {icons} = require("../config.json")
 
 module.exports = {
     name: "random",
     aliases: ["random"],
     run: (client, message, args) => {
         if (!message.member.voice.channel) {
-            message.channel.send('\> Veuillez être connecté sur un salon vocal <:Error:888743744277463141>');
+            message.channel.send('\> Veuillez être connecté sur un salon vocal ' + icons.error + ' !');
             return;
         }
 
         if(index.distube.getQueue(message) === undefined) {
-            message.channel.send("\> Aucune musique n'est en train de jouer <:Error:888743744277463141> !");
+            message.channel.send("\> Aucune musique n'est en train de jouer " + icons.error +" !");
             return
         }
 

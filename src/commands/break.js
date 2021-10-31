@@ -1,34 +1,42 @@
 const index = require('../index.js')
-const {distube} = require("../index");
 const {MessageEmbed} = require("discord.js");
 const {footer, color, logo} = require("../utils/embedRessource");
+const {icons} = require("../config.json")
 
 module.exports = {
     name: "pause",
     aliases: ["pa", "break"],
     run: (client, message, args) => {
         if (!message.member.voice.channel) {
-            message.channel.send('\> Veuillez être connecté sur un salon vocal <:Error:888743744277463141> !');
+            message.reply('\> Veuillez être connecté sur un salon vocal ' + icons.error  +' !');
             return;
         }
 
         if(index.distube.getQueue(message) === undefined) {
-            message.channel.send("\> Aucune musique n'est en train de jouer <:Error:888743744277463141> !");
+            message.reply("\> Aucune musique n'est en train de jouer " + icons.error +" !");
             return
         }
 
         if(index.distube.getQueue(message).paused) {
             index.distube.resume(message);
-            message.channel.send(`\> <:LogoMic:888743744277463140> Musique résumé.`);
+            message.reply('\> ' + icons.song + ' Musique résumé.').then(msg => {
+                setTimeout(() => {
+                    msg.delete();
+                }, 5 * 1000)
+            });
         } else {
             index.distube.pause(message)
-            message.channel.send(`\> <:LogoMic:888743744277463140> Musique mis en pause.`);
+            message.reply('\> ' + icons.song + ' Musique mis en pause.').then(msg => {
+                setTimeout(() => {
+                    msg.delete();
+                }, 5 * 1000)
+            });
         }
     },
     help: (message) => {
         let embed = new MessageEmbed()
             .setTitle("Commande pause")
-            .setDescription("La commande **pause** permet de mettre en pause la musique en cour")
+            .setDescription("La commande **pause** permet de mettre en pause la musique en cours")
             .setFooter(footer)
             .setColor(color)
             .setThumbnail(logo)
