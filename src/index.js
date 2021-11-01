@@ -137,7 +137,7 @@ distube.on("playSong", async (queue, song) => {
 
 distube.on("addSong", (queue, song) => {
     queue.autoplay = false;
-    if(queue.songs.length !== 1) {
+    if (queue.songs.length !== 1) {
         const playEmbed = new MessageEmbed()
             .setColor("#33BBFF")
             .setAuthor(`|  En Attente ... `, song.user.displayAvatarURL({dynamic: true}))
@@ -164,7 +164,7 @@ distube.on("finish", (queue) => {
     }, 4 * 1000)
 
 })
-distube.on("empty", channel => channel.send('\> Salon vide, je quitte le salon ' + icons.success +' !'))
+distube.on("empty", channel => channel.send('\> Salon vide, je quitte le salon ' + icons.success + ' !'))
 distube.on("error", (error) => {
     console.log(error)
 })
