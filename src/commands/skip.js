@@ -1,27 +1,46 @@
 const index = require('../index.js')
 const {MessageEmbed} = require("discord.js");
 const {footer, color, logo} = require("../utils/embedRessource");
+const {icons} = require("../config.json")
+const {sendError, sendSuccess} = require("../utils/utils");
+const {User} = require("../store/user/User");
 
 module.exports = {
     name: "skip",
     aliases: ["s", "fs"],
     run: (client, message, args) => {
         if (!message.member.voice.channel) {
-            message.channel.send('\> Veuillez être connecté sur un salon vocal <:Error:888743744277463141>');
+            sendError(message, "Vous devez être connecté dans un salon vocal.")
             return;
         }
 
         if(index.distube.getQueue(message) === undefined) {
-            message.channel.send("\> Aucune musique n'est en train de jouer <:Error:888743744277463141> !");
+            sendError(message, "Aucune musique n'est en cours de lecture.")
             return
         }
 
-        message.channel.send(`\> Skipped <:Sucess:888743744105492541>`).then(msg => {
-            setTimeout(() => {
-                msg.delete()
-            }, 5*1000)
-        })
-        index.distube.skip(message)
+        User.findOne({uniqueID: message.guild.id.toString()}, function (err, user) {
+            if (err) throw err;
+            if (!user) return;
+
+            if (user) {
+                if(user["isPaused"] === true) {
+                    sendError(message, "Une interruption est en cours...")
+                    return;
+                }
+
+                let queue = index.distube.getQueue(message);
+
+                if(queue.songs.length <= 1) {
+                    sendError(message, "Aucune musique n'est disponible après.")
+                    return;
+                }
+                index.distube.skip(message);
+                sendSuccess(message, "Skipped.")
+            }
+        });
+
+
     },
     help: (message) => {
         let embed = new MessageEmbed()

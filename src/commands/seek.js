@@ -1,21 +1,22 @@
 const index = require('../index.js')
+const {sendError} = require("../utils/utils");
 
 module.exports = {
     name: "seek",
     aliases: ["sk"],
     run: (client, message, args) => {
         if (!message.member.voice.channel) {
-            message.channel.send('\> Veuillez être connecté sur un salon vocal <:Error:888743744277463141> !');
+            sendError(message, "Vous devez être connecté dans un salon vocal.")
             return;
         }
 
         if(index.distube.getQueue(message) === undefined) {
-            message.channel.send("\> Aucune musique n'est en train de jouer <:Error:888743744277463141> !");
+            sendError(message, "Aucune musique n'est en cours de lecture.")
             return
         }
 
         if(args.length === 0 || args.length < 1) {
-            message.channel.send('\> Veuillez préciser une timeline <:Error:888743744277463141> !')
+            sendError(message, "Veuillez préciser une timeline(en ms).")
             return;
         }
 

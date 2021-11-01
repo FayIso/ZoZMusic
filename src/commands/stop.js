@@ -1,23 +1,40 @@
 const index = require('../index.js')
 const {MessageEmbed} = require("discord.js");
 const {logo, color, footer} = require("../utils/embedRessource");
+const {icons} = require("../config.json")
+const {sendError, sendSuccess} = require("../utils/utils");
+const {User} = require("../store/user/User");
 
 module.exports = {
     name: "stop",
     aliases: ["deco", "disconnect", "leave"],
     run: (client, message, args) => {
         if (!message.member.voice.channel) {
-            message.channel.send('\> Veuillez être connecté sur un salon vocal <:Error:888743744277463141>');
+            sendError(message, "Vous devez être connecté dans un salon vocal.")
             return;
         }
 
         if(index.distube.getQueue(message) === undefined) {
-            message.channel.send("\> Aucune musique n'est en train de jouer <:Error:888743744277463141> !");
+            sendError(message, "Aucune musique n'est en cours de lecture.")
             return
         }
 
-        message.channel.send(`\> Leaved <:Sucess:888743744105492541>`).then(msg => { msg.delete({ timeout: 4000 })})
-        index.distube.stop(message)
+        User.findOne({uniqueID: message.guild.id.toString()}, function (err, user) {
+            if (err) throw err;
+            if (!user) return;
+
+            if (user) {
+                if(user["isPaused"] === true) {
+                    sendError(message, "Une interruption est en cours...")
+                    return;
+                }
+
+                index.distube.stop(message)
+                sendSuccess(message, "Leaved.")
+            }
+        });
+
+
     },
     help: (message) => {
         let embed = new MessageEmbed()

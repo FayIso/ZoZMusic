@@ -1,31 +1,18 @@
 const {prefix} = require("../config.json");
 const {Key} = require("../store/key/Key");
 const {User} = require("../store/user/User");
+const {icons} = require("../config.json")
+const {passgen} = require("../utils/utils");
 
 module.exports = {
     name: "redeem",
-    aliases: ["red"],
+    aliases: ["red", "claim"],
     run: (client, message, args) => {
-        //// PASSWORD GEN ---> START ////
-        function passw(length) {
-            var result = [];
-            var characters = "ABCD0123456789";
-            var charactersLength = characters.length;
-            for (var i = 0; i < length; i++) {
-                result.push(
-                    characters.charAt(Math.floor(Math.random() * charactersLength))
-                );
-            }
-            return result.join("");
-        }
-
-        //// PASSWORD GEN ---> END ////
-
         message.delete();
         const claim = args.join(" ");
 
         if (!claim) {
-            message.channel.send(`\> Usage: **${prefix}claim** + **<key>** `).then(msg => {
+            message.channel.send(`\> Usage: **${prefix}redeem** + **<key>** `).then(msg => {
                 setTimeout(() => {
                     msg.delete();
                 }, 3 * 1000)
@@ -37,22 +24,22 @@ module.exports = {
             if (err) throw err;
 
             if (!key) {
-                message.channel.send(`\> ${message.author}, key **doesn't exist** or **already redeemed** <:Error:888743744277463141> ...`);
+                message.reply(`\> Sorry, the key **doesn't exist** or **already redeemed** ${icons.error} ...`);
                 return;
             }
 
-            const password = passw(10);
+            const password = passgen(10);
 
             User.findOne({uniqueID: message.guild.id.toString()}, function (err, user) {
                 if (err) throw err;
                 if (!user) {
-                    message.reply(`\> ${message.author}, user doesn't exist <:Error:888743744277463141> ...`);
+                    message.reply(`\> Sorry, user doesn't exist ${icons.error} ...`);
                     return;
                 }
 
                 if (user["premium"] === true) {
-                    message.channel.send(
-                        `\> ${message.author}, This server are already an active **Premium ZoZ® License**`
+                    message.reply(
+                        `\> Sorry, This server are already an active **Premium ZoZ® License**`
                     );
                     return;
                 }
@@ -61,7 +48,7 @@ module.exports = {
                     password: password,
                     premium: true,
                     key: claim
-                }, function (err, docs) {
+                }, function (err) {
                     if (err) throw err;
                     message.author.createDM().then((channel) => {
                         channel.send(
@@ -69,11 +56,11 @@ module.exports = {
                         );
                     });
                     message.channel.send(
-                        `\> ${message.author}, key successfull redeemed ! **Server have become a Premium ZoZ® Server** <:Sucess:888743744105492541> !`
+                        `\> ${message.author}, key successfull redeemed ! **Server have become a Premium ZoZ® Server** ${icons.success} !`
                     );
                 });
 
-                Key.deleteOne({key: claim}, function (err, docs) {
+                Key.deleteOne({key: claim}, function (err) {
                     if (err) throw err;
                 });
 
