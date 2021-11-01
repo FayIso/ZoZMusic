@@ -3,6 +3,7 @@ const {MessageEmbed} = require("discord.js");
 const {logo, color, footer} = require("../utils/embedRessource");
 const {icons} = require("../config.json")
 const {sendError} = require("../utils/utils");
+const {User} = require("../store/user/User");
 
 module.exports = {
     name: "stop",
@@ -18,8 +19,22 @@ module.exports = {
             return
         }
 
-        message.reply(`\> Leaved ${icons.success}`);
-        index.distube.stop(message)
+        User.findOne({uniqueID: message.guild.id.toString()}, function (err, user) {
+            if (err) throw err;
+            if (!user) return;
+
+            if (user) {
+                if(user["isPaused"] === true) {
+                    sendError(message, "Une interruption est en cours...")
+                    return;
+                }
+
+                message.reply(`\> Leaved ${icons.success}`);
+                index.distube.stop(message)
+            }
+        });
+
+
     },
     help: (message) => {
         let embed = new MessageEmbed()

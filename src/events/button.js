@@ -3,6 +3,7 @@ const {owners, icons} = require("../config.json");
 const {keygen, sendError} = require("../utils/utils");
 const {Key} = require("../store/key/Key");
 const {MessageEmbed} = require("discord.js");
+const {User} = require("../store/user/User");
 
 module.exports = async interaction => {
     if (!interaction.isButton()) return;
@@ -16,21 +17,36 @@ module.exports = async interaction => {
             break;
         case "idButtonSkip":
             if (!interaction.member.voice.channel) {
-                sendError(interaction, "Veuillez être connecté sur un salon vocal.")
+                sendError(interaction, "Vous devez être connecté dans un salon vocal.")
                 return;
             }
 
-            /*if(index.distube.getQueue(interaction.message) === undefined) {
-                interaction.reply("\> Aucune musique n'est en train de jouer <:Error:888743744277463141> !");
+            if(index.distube.getQueue(interaction) === undefined) {
+                sendError(interaction, "Aucune musique n'est en cours de lecture.")
                 return
-            }*/
-
-            try {
-                index.distube.skip(interaction)
-                interaction.reply(`\> Skipped ${icons.success}`);
-            } catch (error) {
-                sendError(interaction, "Impossible de passer la musique.")
             }
+
+            User.findOne({uniqueID: interaction.guild.id.toString()}, function (err, user) {
+                if (err) throw err;
+                if (!user) return;
+
+                if (user) {
+                    if(user["isPaused"] === true) {
+                        sendError(interaction, "Une interruption est en cours...")
+                        return;
+                    }
+
+                    let queue = index.distube.getQueue(interaction);
+
+                    if(queue.songs.length <= 1) {
+                        sendError(interaction, "Aucune musique n'est disponible après.")
+                        return;
+                    }
+                    index.distube.skip(interaction);
+                    interaction.reply(`\> Skipped ${icons.success} `)
+
+                }
+            });
             break;
         case "idButtonStop":
             require("../commands/stop").run(index.client, interaction, "");

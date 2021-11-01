@@ -125,15 +125,18 @@ distube.on("finishSong", (queue, song) => {
             if(user["queueSize"] >= 5 && user["premium"] === false) {
                 const pauseEmbed = new MessageEmbed()
                     .setColor("#33BBFF")
-                    .setAuthor(`|  Interruption ... `, client.user.displayAvatarURL({dynamic: true}))
-                    .setDescription(`Interruption **ZoZ® Music** pendant 30 secondes | __Conseil:__ _Aller prendre l'air !_\n\> Buy **Premium ZoZ® License** for non-stop music ${icons.error}`);
-                queue.textChannel.send({embeds: [pauseEmbed]});
+                    .setAuthor(`|  Je reviens très vite ! `, client.user.displayAvatarURL({dynamic: true}))
+                    .setDescription(`\> **ZoZ®** prend **30 Secondes** de repit ! \n\> __Note__ : Acheter une **License Premium ZoZ®** pour de la musique non-stop ${icons.success}`);
                 setTimeout(() => {
-                     queue.pause();
+                    if(!queue.paused) queue.pause();
+                    queue.textChannel.send({embeds: [pauseEmbed]});
+                    User.updateOne({uniqueID: queue.textChannel.guild.id.toString()}, {isPaused: true}, function (err) {
+                        if (err) throw err;
+                    })
                 }, 5000)
                 setTimeout(() => {
                     if (queue.paused) distube.resume(queue)
-                    User.updateOne({uniqueID: queue.textChannel.guild.id.toString()}, {queueSize: 1}, function (err) {
+                    User.updateOne({uniqueID: queue.textChannel.guild.id.toString()}, {queueSize: 1, isPaused: false}, function (err) {
                         if (err) throw err;
                     })
                 }, 30000)

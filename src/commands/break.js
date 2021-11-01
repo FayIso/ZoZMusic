@@ -3,6 +3,7 @@ const {MessageEmbed} = require("discord.js");
 const {footer, color, logo} = require("../utils/embedRessource");
 const {icons} = require("../config.json")
 const {sendError} = require("../utils/utils");
+const {User} = require("../store/user/User");
 
 module.exports = {
     name: "pause",
@@ -13,18 +14,31 @@ module.exports = {
             return;
         }
 
-        if(index.distube.getQueue(message) === undefined) {
+        if (index.distube.getQueue(message) === undefined) {
             sendError(message, "Aucune musique n'est en cours de lecture.")
             return
         }
 
-        if(index.distube.getQueue(message).paused) {
-            index.distube.resume(message);
-            message.reply('\> ' + icons.song + ' Musique résumé.');
-        } else {
-            index.distube.pause(message)
-            message.reply('\> ' + icons.song + ' Musique mis en pause.');
-        }
+        User.findOne({uniqueID: message.guild.id.toString()}, function (err, user) {
+            if (err) throw err;
+            if (!user) return;
+
+            if (user) {
+                if(user["isPaused"] === true) {
+                    sendError(message, "Une interruption est en cours...")
+                    return;
+                }
+
+                if (index.distube.getQueue(message).paused) {
+                    index.distube.resume(message);
+                    message.reply('\> ' + icons.song + ' Musique résumé.');
+                } else {
+                    index.distube.pause(message)
+                    message.reply('\> ' + icons.song + ' Musique mis en pause.');
+                }
+            }
+        });
+
     },
     help: (message) => {
         let embed = new MessageEmbed()
@@ -39,7 +53,7 @@ module.exports = {
                 {name: "Example", value: "`*loop`", inline: true}
             )
             .addField("Information", "Pour plus de commandes faites `*help`");
-        
+
         message.reply({embeds: [embed]});
     }
 }

@@ -3,6 +3,7 @@ const {MessageEmbed} = require("discord.js");
 const {footer, color, logo} = require("../utils/embedRessource");
 const {icons} = require("../config.json")
 const {sendError} = require("../utils/utils");
+const {User} = require("../store/user/User");
 
 module.exports = {
     name: "skip",
@@ -18,12 +19,27 @@ module.exports = {
             return
         }
 
-        try {
-            index.distube.skip(message);
-            message.reply(`\> Skipped ${icons.success} `)
-        } catch (error) {
-            sendError(message, "Impossible de passer la musique.")
-        }
+        User.findOne({uniqueID: message.guild.id.toString()}, function (err, user) {
+            if (err) throw err;
+            if (!user) return;
+
+            if (user) {
+                if(user["isPaused"] === true) {
+                    sendError(message, "Une interruption est en cours...")
+                    return;
+                }
+
+                let queue = index.distube.getQueue(message);
+
+                if(queue.songs.length <= 1) {
+                    sendError(message, "Aucune musique n'est disponible après.")
+                    return;
+                }
+                index.distube.skip(message);
+                message.reply(`\> Skipped ${icons.success} `)
+            }
+        });
+
 
     },
     help: (message) => {
