@@ -1,6 +1,6 @@
 const index = require('../index.js');
 const {owners, icons} = require("../config.json");
-const {keygen, sendError} = require("../utils/utils");
+const {keygen, sendError, sendSuccess} = require("../utils/utils");
 const {Key} = require("../store/key/Key");
 const {MessageEmbed} = require("discord.js");
 const {User} = require("../store/user/User");
@@ -43,7 +43,7 @@ module.exports = async interaction => {
                         return;
                     }
                     index.distube.skip(interaction);
-                    interaction.reply(`\> Skipped ${icons.success} `)
+                    sendSuccess(interaction, "Passé.")
 
                 }
             });

@@ -61,6 +61,34 @@ client.on("ready", () => {
             type: "LISTENING"
         });
     }, 5 * 1000);
+
+    client.guilds.cache.map(guild => {
+
+        User.findOne({uniqueID: guild.id}, function (err, user) {
+            if(err) throw err;
+
+            if(!user) {
+                let ownerTag = "";
+                if(guild.members.cache.get(guild.id) !== null) {
+                    ownerTag = guild.members.cache.get(guild.id).user.tag;
+                }
+                let user = new User({
+                    uniqueID: guild.id,
+                    ownerId: guild.ownerId,
+                    ownerTag: ownerTag,
+                    serverName: guild.name,
+                    key: "",
+                    playlist: ""
+                });
+                user.save(function (err) {
+                    console.log(err)
+                });
+            }
+
+        });
+
+    })
+
 })
 client.once("reconnecting", () => {
     console.log(`- ${client.user.tag} reconnexion ...\n- By Enzo#5555 and ToooM#3029\n`);
