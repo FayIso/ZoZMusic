@@ -24,7 +24,7 @@ module.exports = {
             if (err) throw err;
 
             if (!key) {
-                message.reply(`\> Sorry, the key **doesn't exist** or **already redeemed** \`${icons.error}\` ...`);
+                message.reply(`\> Sorry, the key **doesn't exist** or **already redeemed** ${icons.error} ...`);
                 return;
             }
 
@@ -33,7 +33,7 @@ module.exports = {
             User.findOne({uniqueID: message.guild.id.toString()}, function (err, user) {
                 if (err) throw err;
                 if (!user) {
-                    message.reply(`\> Sorry, user doesn't exist \`${icons.error}\` ...`);
+                    message.reply(`\> Sorry, user doesn't exist ${icons.error} ...`);
                     return;
                 }
 
@@ -56,7 +56,7 @@ module.exports = {
                         );
                     });
                     message.channel.send(
-                        `\> ${message.author}, key successfull redeemed ! **Server have become a Premium ZoZ® Server** \`${icons.success}\` !`
+                        `\> ${message.author}, key successfull redeemed ! **Server have become a Premium ZoZ® Server** ${icons.success} !`
                     );
                 });
 

@@ -1,4 +1,5 @@
-
+const {MessageEmbed} = require("discord.js");
+const {icons} = require("../config.json")
 
 module.exports = {
     keygen: (length) => {
@@ -21,6 +22,13 @@ module.exports = {
             );
         }
         return result.join("");
+    },
+    sendError: (message, error) => {
+        const errorEmbed = new MessageEmbed()
+            .setColor("#FC3D3D")
+            .setDescription(`\> ${error} ${icons.error}`);
+
+        message.reply({embeds: [errorEmbed]})
     }
 
 }

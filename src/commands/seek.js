@@ -1,22 +1,22 @@
 const index = require('../index.js')
-const {icons} = require("../config.json")
+const {sendError} = require("../utils/utils");
 
 module.exports = {
     name: "seek",
     aliases: ["sk"],
     run: (client, message, args) => {
         if (!message.member.voice.channel) {
-            message.channel.send('\> Veuillez être connecté sur un salon vocal ' + icons.error +' !');
+            sendError(message, "Vous devez être connecté dans un salon vocal.")
             return;
         }
 
         if(index.distube.getQueue(message) === undefined) {
-            message.channel.send("\> Aucune musique n'est en train de jouer " + icons.error +" !");
-            return;
+            sendError(message, "Aucune musique n'est en cours de lecture.")
+            return
         }
 
         if(args.length === 0 || args.length < 1) {
-            message.channel.send('\> Veuillez préciser une timeline  ' + icons.error + ' !')
+            sendError(message, "Veuillez préciser une timeline(en ms).")
             return;
         }
 

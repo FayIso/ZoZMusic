@@ -1,6 +1,6 @@
 const {Client, Intents, Collection, MessageEmbed, MessageActionRow, MessageButton} = require("discord.js");
 const {DisTube} = require("distube")
-const {prefix, token} = require("./config.json");
+const {prefix, token, icons} = require("./config.json");
 const mongoose = require("mongoose");
 const fs = require("fs");
 const {SpotifyPlugin} = require("@distube/spotify");
@@ -135,10 +135,16 @@ distube.on("playSong", async (queue, song) => {
 
 distube.on("addSong", (queue, song) => {
     queue.autoplay = false;
-    queue.textChannel.send(`\> <:Song:904353981445341214> En attente \`${song.name}\` - \`${song.formattedDuration}\``)
+    if(queue.songs.length !== 1) {
+        const playEmbed = new MessageEmbed()
+            .setColor("#33BBFF")
+            .setAuthor(`|  En Attente ... `, song.user.displayAvatarURL({dynamic: true}))
+            .setDescription(`Titre: **\`${song.name}\`** \n Duration: **\`${song.formattedDuration}\`**`);
+        queue.textChannel.send({embeds: [playEmbed]})
+    }
 })
 distube.on("searchNoResult", (message) => {
-    message.channel.send(`\> <:Error:888743744277463141> Aucune musique n'a été trouver.`)
+    message.channel.send(`\> ${icons.error} Aucune musique n'a été trouver.`)
 })
 distube.on("searchInvalidAnswer", () => {
 })
@@ -147,16 +153,16 @@ distube.on("searchDone", () => {
 distube.on("searchCancel", () => {
 })
 distube.on("noRelated", (queue) => {
-    queue.textChannel.send(`\> <:Error:888743744277463141> Impossible de trouver la musique liée.`)
+    queue.textChannel.send(`\> ${icons.error} Impossible de trouver la musique liée.`)
 })
 distube.on("finish", (queue) => {
-    queue.textChannel.send(`\> Aucune musique, je quitte le salon <:Sucess:888743744105492541> !`);
+    queue.textChannel.send(`\> Aucune musique, je quitte le salon ${icons.success} !`);
     setTimeout(() => {
         queue.voice.leave();
     }, 4 * 1000)
 
 })
-distube.on("empty", channel => channel.send('\> Salon vide, je quitte le salon <:Sucess:888743744105492541> !'))
+distube.on("empty", channel => channel.send('\> Salon vide, je quitte le salon ' + icons.success +' !'))
 distube.on("error", (error) => {
     console.log(error)
 })

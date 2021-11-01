@@ -1,6 +1,6 @@
 const index = require('../index.js');
-const {owners} = require("../config.json");
-const {keygen} = require("../utils/utils");
+const {owners, icons} = require("../config.json");
+const {keygen, sendError} = require("../utils/utils");
 const {Key} = require("../store/key/Key");
 const {MessageEmbed} = require("discord.js");
 
@@ -16,7 +16,7 @@ module.exports = async interaction => {
             break;
         case "idButtonSkip":
             if (!interaction.member.voice.channel) {
-                interaction.reply('\> Veuillez être connecté sur un salon vocal <:Error:888743744277463141>');
+                sendError(interaction, "Veuillez être connecté sur un salon vocal.")
                 return;
             }
 
@@ -27,9 +27,9 @@ module.exports = async interaction => {
 
             try {
                 index.distube.skip(interaction)
-                interaction.reply(`\> Skipped <:Success:888743744105492541>`);
+                interaction.reply(`\> Skipped ${icons.success}`);
             } catch (error) {
-                interaction.message.reply("\> Impossible de passer la musique <:Error:888743744277463141> !")
+                sendError(interaction, "Impossible de passer la musique.")
             }
             break;
         case "idButtonStop":

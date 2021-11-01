@@ -2,35 +2,28 @@ const index = require('../index.js')
 const {MessageEmbed} = require("discord.js");
 const {footer, color, logo} = require("../utils/embedRessource");
 const {icons} = require("../config.json")
+const {sendError} = require("../utils/utils");
 
 module.exports = {
     name: "pause",
     aliases: ["pa", "break"],
     run: (client, message, args) => {
         if (!message.member.voice.channel) {
-            message.reply('\> Veuillez être connecté sur un salon vocal ' + icons.error  +' !');
+            sendError(message, "Vous devez être connecté dans un salon vocal.")
             return;
         }
 
         if(index.distube.getQueue(message) === undefined) {
-            message.reply("\> Aucune musique n'est en train de jouer " + icons.error +" !");
+            sendError(message, "Aucune musique n'est en cours de lecture.")
             return
         }
 
         if(index.distube.getQueue(message).paused) {
             index.distube.resume(message);
-            message.reply('\> ' + icons.song + ' Musique résumé.').then(msg => {
-                setTimeout(() => {
-                    msg.delete();
-                }, 5 * 1000)
-            });
+            message.reply('\> ' + icons.song + ' Musique résumé.');
         } else {
             index.distube.pause(message)
-            message.reply('\> ' + icons.song + ' Musique mis en pause.').then(msg => {
-                setTimeout(() => {
-                    msg.delete();
-                }, 5 * 1000)
-            });
+            message.reply('\> ' + icons.song + ' Musique mis en pause.');
         }
     },
     help: (message) => {
