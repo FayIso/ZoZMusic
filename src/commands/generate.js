@@ -34,7 +34,7 @@ module.exports = {
                     .setEmoji('')
             );
 
-            message.channel.send({embeds: [keyszoz], components: [keyGeneration]})
+            message.author.send({embeds: [keyszoz], components: [keyGeneration]})
 
         } else {
             message.delete()

@@ -57,14 +57,10 @@ module.exports = async interaction => {
                         let gen = new MessageEmbed()
                             .setColor("#66b4ff")
                             .setDescription(`\> **ZoZ Premium Key :** ${key} \n\> **Expiry** : Weekly`)
-                        interaction.user.send({embeds: [gen]})
+                        interaction.reply({embeds: [gen]});
+                        interaction.message.delete()
                     }
                 });
-                interaction.reply("\> **Check Your Private Message ...** ");
-                setTimeout(function() {
-                    interaction.message.delete()
-                    interaction.deleteReply();
-                }, 3000)
             } else {
                 interaction.message.delete()
             }
@@ -88,14 +84,10 @@ module.exports = async interaction => {
                         let gen = new MessageEmbed()
                             .setColor("#66b4ff")
                             .setDescription(`\> **ZoZ Premium Key :** ${key} \n\> **Expiry** : Lifetime`)
-                        interaction.user.send({embeds: [gen]})
+                        interaction.reply({embeds: [gen]});
+                        interaction.message.delete()
                     }
                 });
-                interaction.reply("\> **Check Your Private Message ...** ");
-                setTimeout(function() {
-                    interaction.message.delete()
-                    interaction.deleteReply()
-                }, 3000)
             } else {
                 interaction.message.delete()
                 return
@@ -120,14 +112,10 @@ module.exports = async interaction => {
                         let gen = new MessageEmbed()
                             .setColor("#66b4ff")
                             .setDescription(`\> **ZoZ Premium Key :** ${key} \n\> **Expiry** : Lifetime`)
-                        interaction.user.send({embeds: [gen]})
+                        interaction.reply({embeds: [gen]});
+                        interaction.message.delete()
                     }
                 });
-                interaction.reply("\> **Check Your Private Message ...** ");
-                setTimeout(function() {
-                    interaction.message.delete()
-                    interaction.deleteReply()
-                }, 3000)
             } else {
                 interaction.message.delete()
                 return
