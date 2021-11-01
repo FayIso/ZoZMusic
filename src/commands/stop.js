@@ -30,7 +30,7 @@ module.exports = {
                 }
 
                 index.distube.stop(message)
-                sendSuccess(message, "Leaved.")
+                sendSuccess(message, "Déconnecté.")
             }
         });
 

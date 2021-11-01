@@ -36,7 +36,7 @@ module.exports = {
                     return;
                 }
                 index.distube.skip(message);
-                sendSuccess(message, "Skipped.")
+                sendSuccess(message, "Passé.")
             }
         });
 
