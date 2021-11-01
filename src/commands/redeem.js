@@ -6,7 +6,7 @@ const {passgen} = require("../utils/utils");
 
 module.exports = {
     name: "redeem",
-    aliases: ["red", "claim"],
+    aliases: ["activate", "claim"],
     run: (client, message, args) => {
         message.delete();
         const claim = args.join(" ");
@@ -20,53 +20,181 @@ module.exports = {
             return;
         }
 
-        Key.findOne({key: claim}, function (err, key) {
+        Key.findOne({key: claim}, function (err, key)
+        {
             if (err) throw err;
 
             if (!key) {
-                message.reply(`\> Sorry, the key **doesn't exist** or **already redeemed** ${icons.error} ...`);
+                message.reply(`\> Désolé, la clé **n'existe pas** ou elle est **déjà activée** ${icons.error} ...`);
                 return;
             }
 
             const password = passgen(10);
 
-            User.findOne({uniqueID: message.guild.id.toString()}, function (err, user) {
+            User.findOne({uniqueID: message.guild.id.toString()}, function (err, user)
+            {
                 if (err) throw err;
-                if (!user) {
-                    message.reply(`\> Sorry, user doesn't exist ${icons.error} ...`);
+                if (!user)
+                {
+                    message.reply(`\> **ERREUR UDNE01**  ${icons.error} ...`);
                     return;
                 }
-
-                if (user["premium"] === true) {
-                    message.reply(
-                        `\> Sorry, This server are already an active **Premium ZoZ® License**`
-                    );
-                    return;
+                else if (user["premium"] === false)
+                {
+                    if(key["expiry"] === "Week")
+                    {
+                        User.updateOne({uniqueID: message.guild.id.toString()}, {
+                            password: password,
+                            premium: true,
+                            key: claim,
+                            expiry: "7.00"
+                        }, function (err) {
+                            if (err) throw err;
+                            message.author.createDM().then((channel) => {
+                                channel.send(
+                                    `Vous avez utilisé une **License Premium ZoZ®** __${message.guild.name}__ \n\n\> \`\`N'oubliez pas votre Pass !\`\`\n\n\> Pass : \`\`${password}\`\`\n\n Si vous avez des question veuillez contacter un **Administrateur ZoZ** !`
+                                );
+                            });
+                            message.channel.send(
+                                `\> ${message.author}, la clé a bien été activé sur votre serveur ! **Ce server est devenue un Serveur Premium ZoZ®**  ${icons.success} | Expire: **7 Jours 00 Heures**`
+                            );
+                        });
+                    }
+                    else if (key["expiry"] === "Month")
+                    {
+                        User.updateOne({uniqueID: message.guild.id.toString()}, {
+                            password: password,
+                            premium: true,
+                            key: claim,
+                            expiry: "30.00"
+                        }, function (err) {
+                            if (err) throw err;
+                            message.author.createDM().then((channel) => {
+                                channel.send(
+                                    `Vous avez utilisé une **License Premium ZoZ®** __${message.guild.name}__ \n\n\> \`\`N'oubliez pas votre Pass !\`\`\n\n\> Pass : \`\`${password}\`\`\n\n Si vous avez des question veuillez contacter un **Administrateur ZoZ** !`
+                                );
+                            });
+                            message.channel.send(
+                                `\> ${message.author}, la clé a bien été activé sur votre serveur ! **Ce server est devenue un Serveur Premium ZoZ®**  ${icons.success} | Expire: **30 Jours 00 Heures**`
+                            );
+                        });
+                    }
+                    else if (key["expiry"] === "Lifetime")
+                    {
+                        User.updateOne({uniqueID: message.guild.id.toString()}, {
+                            password: password,
+                            premium: true,
+                            key: claim,
+                            expiry: "Never"
+                        }, function (err) {
+                            if (err) throw err;
+                            message.author.createDM().then((channel) => {
+                                channel.send(
+                                    `Vous avez utilisé une **License Premium ZoZ®** __${message.guild.name}__ \n\n\> \`\`N'oubliez pas votre Pass !\`\`\n\n\> Pass : \`\`${password}\`\`\n\n Si vous avez des question veuillez contacter un **Administrateur ZoZ** !`
+                                );
+                            });
+                            message.channel.send(
+                                `\> ${message.author}, la clé a bien été activé sur votre serveur ! **Ce server est devenue un Serveur Premium ZoZ®**  ${icons.success} | Expire: **Never**`
+                            );
+                        });
+                    }
+                    else
+                    {
+                        message.reply(`\> **ERREUR KNV01**  ${icons.error} ...`);
+                        return;
+                    }
                 }
+                else
+                {
+                    if(key["expiry"] === "Week")
+                    {
+                        if(user["expiry"] === "Never")
+                        {
+                            message.channel.send(`\> ${message.author}, la clé a bien été activé sur votre serveur ! **Ce server est devenue un Serveur Premium ZoZ®**  ${icons.success} | Expire: **Jamais**`
+                            );
+                            return
+                        }
 
-                User.updateOne({uniqueID: message.guild.id.toString()}, {
-                    password: password,
-                    premium: true,
-                    key: claim
-                }, function (err) {
-                    if (err) throw err;
-                    message.author.createDM().then((channel) => {
-                        channel.send(
-                            `**_You are use ZoZ® Premium Key in __${message.guild.name}__ _** \n\n\> \`\`Please don't forget your pass !\`\`\n\n\> Pass : \`\`${password}\`\`\n\n If you have question contact **ZoZ Administrator** !`
-                        );
-                    });
-                    message.channel.send(
-                        `\> ${message.author}, key successfull redeemed ! **Server have become a Premium ZoZ® Server** ${icons.success} !`
-                    );
-                });
+                        let ex = user["expiry"].split(".")
+                        let days = parseInt(ex[0])
+                        let hours = parseInt(ex[1])
+                        let days1 = (days)+7
 
+                        let expiryNew = (days1 + "." + hours).toString();
+
+                        User.updateOne({uniqueID: message.guild.id.toString()}, {
+                            key: claim,
+                            expiry: expiryNew
+                        }, function (err) {
+                            if (err) throw err;
+                            message.author.createDM().then((channel) => {
+                                channel.send(
+                                    `Vous avez utilisé une **License Premium ZoZ®** __${message.guild.name}__ \n\n\> \`\`N'oubliez pas votre Pass !\`\`\n\n\> Pass : \`\`${password}\`\`\n\n Si vous avez des question veuillez contacter un **Administrateur ZoZ** !`
+                                );
+                            });
+                            message.channel.send(
+                                `\> ${message.author}, la clé a bien été activé sur votre serveur ! **Ce server est devenue un Serveur Premium ZoZ®**  ${icons.success} | Expire: **${days1} Jours ${hours} Heures**`
+                            );
+                        });
+                    }
+                    else if (key["expiry"] === "Month")
+                    {
+                        if(user["expiry"] === "Never")
+                        {
+                            message.channel.send(`\> ${message.author}, la clé a bien été activé sur votre serveur ! **Ce server est devenue un Serveur Premium ZoZ®**  ${icons.success} | Expire: **Jamais**`
+                            );
+                            return
+                        }
+
+                        let ex = user["expiry"].split(".")
+                        let days = parseInt(ex[0])
+                        let hours = parseInt(ex[1])
+                        let days1 = (days)+30
+
+                        let expiryNew = (days1 + "." + hours).toString();
+
+                        User.updateOne({uniqueID: message.guild.id.toString()}, {
+                            key: claim,
+                            expiry: expiryNew
+                        }, function (err) {
+                            if (err) throw err;
+                            message.author.createDM().then((channel) => {
+                                channel.send(
+                                    `Vous avez utilisé une **License Premium ZoZ®** __${message.guild.name}__ \n\n\> \`\`N'oubliez pas votre Pass !\`\`\n\n\> Pass : \`\`${password}\`\`\n\n Si vous avez des question veuillez contacter un **Administrateur ZoZ** !`
+                                );
+                            });
+                            message.channel.send(
+                                `\> ${message.author}, la clé a bien été activé sur votre serveur ! **Ce server est devenue un Serveur Premium ZoZ®**  ${icons.success} | Expire: **${days1} Jours ${hours} Heures**`
+                            );
+                        });
+                    }
+                    else if (key["expiry"] === "Lifetime")
+                    {
+                        User.updateOne({uniqueID: message.guild.id.toString()}, {
+                            key: claim,
+                            expiry: "Never"
+                        }, function (err) {
+                            if (err) throw err;
+                            message.author.createDM().then((channel) => {
+                                channel.send(
+                                    `Vous avez utilisé une **License Premium ZoZ®** __${message.guild.name}__ \n\n\> \`\`N'oubliez pas votre Pass !\`\`\n\n\> Pass : \`\`${password}\`\`\n\n Si vous avez des question veuillez contacter un **Administrateur ZoZ** !`
+                                );
+                            });
+                            message.channel.send(
+                                `\> ${message.author}, la clé a bien été activé sur votre serveur ! **Ce server est devenue un Serveur Premium ZoZ®**  ${icons.success} | Expire: **Jamais**`
+                            );
+                        });
+                    }
+                    else
+                    {
+                        message.reply(`\> **ERREUR KNV01**  ${icons.error} ...`);
+                        return;
+                    }
+                }
                 Key.deleteOne({key: claim}, function (err) {
                     if (err) throw err;
                 });
-
-
             });
-
         });
     },
     help: (message) => {

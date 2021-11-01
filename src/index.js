@@ -6,6 +6,7 @@ const fs = require("fs");
 const {SpotifyPlugin} = require("@distube/spotify");
 const DeezerPlugin = require("./utils/deezer");
 const {User} = require("./store/user/User");
+const {updateExpiry} = require("./utils/utils");
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS]})
 const distube = new DisTube(client, {
     searchSongs: 10,
@@ -54,20 +55,21 @@ require('./utils/eventLoader')(client);
  */
 
 client.on("ready", () => {
-    console.log(`${client.user.tag} is ready.`)
+    console.log(` - ${client.user.tag} is ready ! Devlopped by : Enzo#5555, Pepito_404#1933, ToooM#3029 `)
     client.user.setPresence({status: "dnd"})
     setInterval(() => {
         client.user.setActivity(`${client.guilds.cache.size} Servers | ZoZ® Prefix : ${prefix}`, {
             type: "LISTENING"
         });
     }, 5 * 1000);
+    setInterval(updateExpiry, 3600000)
 })
 client.once("reconnecting", () => {
-    console.log(`- ${client.user.tag} reconnexion ...\n- By Enzo#5555 and ToooM#3029\n`);
+    console.log(`- ${client.user.tag} reconnexion ...\n- Devlopped by : Enzo#5555, Pepito_404#1933, ToooM#3029\n`);
 });
 
 client.once("disconnect", () => {
-    console.log(`- ${client.user.tag} deconnexion ...\n- By Enzo#5555 and ToooM#3029\n`);
+    console.log(`- ${client.user.tag} deconnexion ...\n- Devlopped by : Enzo#5555, Pepito_404#1933, ToooM#3029\n`);
 });
 
 client.on("interactionCreate", interaction => require("./events/button")(interaction));
