@@ -20,7 +20,10 @@ module.exports = {
 
         let mode = index.distube.setRepeatMode(message, parseInt(args[0]));
         mode = mode ? mode === 2 ? "Repetition de la liste" : "Repetition du song" : "Off";
-        message.channel.send(`\> ${icons.loop} Loop: ${mode}`);
+        const loopEmbed = new MessageEmbed()
+            .setColor("#6FFF7C")
+            .setDescription(`\> ${icons.loop} Loop: ${mode}`);
+        message.reply({embeds: [loopEmbed]})
     },
     help: (message) => {
         let embed = new MessageEmbed()

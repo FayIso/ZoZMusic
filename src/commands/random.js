@@ -1,7 +1,7 @@
 const index = require('../index.js')
 const {MessageEmbed} = require("discord.js");
 const {logo, color, footer} = require("../utils/embedRessource");
-const {sendError} = require("../utils/utils");
+const {sendError, sendSuccess} = require("../utils/utils");
 
 module.exports = {
     name: "random",
@@ -18,7 +18,7 @@ module.exports = {
         }
 
         index.distube.shuffle(message);
-        message.channel.reply(`\> 📯 La playlist est devenue aléatoire.`);
+        sendSuccess(message, "📯 La playlist est devenue aléatoire.")
     },
 
     help: (message) => {

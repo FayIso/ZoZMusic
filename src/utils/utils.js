@@ -31,10 +31,17 @@ module.exports = {
         message.reply({embeds: [errorEmbed]})
     },
     sendSuccess: (message, success) => {
-        const errorEmbed = new MessageEmbed()
+        const successEmbed = new MessageEmbed()
             .setColor("#6FFF7C")
             .setDescription(`\> ${success} ${icons.success}`);
 
-        message.reply({embeds: [errorEmbed]})
+        message.reply({embeds: [successEmbed]})
+    },
+    sendSong: (message, song) => {
+        const songEmbed = new MessageEmbed()
+            .setColor("#FEC93A")
+            .setDescription(`\> ${song} ${icons.song}`);
+
+        message.reply({embeds: [songEmbed]})
     },
 }

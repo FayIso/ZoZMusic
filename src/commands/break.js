@@ -2,7 +2,7 @@ const index = require('../index.js')
 const {MessageEmbed} = require("discord.js");
 const {footer, color, logo} = require("../utils/embedRessource");
 const {icons} = require("../config.json")
-const {sendError} = require("../utils/utils");
+const {sendError, sendSong} = require("../utils/utils");
 const {User} = require("../store/user/User");
 
 module.exports = {
@@ -31,10 +31,10 @@ module.exports = {
 
                 if (index.distube.getQueue(message).paused) {
                     index.distube.resume(message);
-                    message.reply('\> ' + icons.song + ' Musique résumé.');
+                    sendSong(message, "Résumé")
                 } else {
                     index.distube.pause(message)
-                    message.reply('\> ' + icons.song + ' Musique mis en pause.');
+                    sendSong(message, "Pause")
                 }
             }
         });

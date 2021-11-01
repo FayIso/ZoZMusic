@@ -2,7 +2,7 @@ const index = require('../index.js')
 const {MessageEmbed} = require("discord.js");
 const {logo, color, footer} = require("../utils/embedRessource");
 const {icons} = require("../config.json")
-const {sendError} = require("../utils/utils");
+const {sendError, sendSuccess} = require("../utils/utils");
 const {User} = require("../store/user/User");
 
 module.exports = {
@@ -29,8 +29,8 @@ module.exports = {
                     return;
                 }
 
-                message.reply(`\> Leaved ${icons.success}`);
                 index.distube.stop(message)
+                sendSuccess(message, "Leaved.")
             }
         });
 
