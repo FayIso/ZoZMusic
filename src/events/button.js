@@ -8,6 +8,7 @@ module.exports = async interaction => {
     if (!interaction.isButton()) return;
 
     switch (interaction.customId) {
+
         /**
          * PLAY
          */
