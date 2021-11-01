@@ -109,29 +109,49 @@ distube.on("playSong", async (queue, song) => {
                     .setStyle("SECONDARY")
                     .setEmoji('')
             );
-
-            if (user["queueSize"] >= 5 && user["premium"] === false) {
-                if (!queue.paused) distube.pause(queue);
-                queue.textChannel.send(`\> Interuption **ZoZ® Music** pendant 30 secondes | __Conseil:__ _Aller prendre l'air !_\n\> Buy **Premium ZoZ® License** for non-stop music <:Error:888743744277463141>`);
-                setTimeout(() => {
-                    if (queue.paused) distube.resume(queue)
-                    User.updateOne({uniqueID: queue.textChannel.guild.id.toString()}, {queueSize: 1}, function (err) {
-                        if (err) throw err;
-                    })
-
-                    queue.textChannel.send({embeds: [playEmbed], components: [songButtons]});
-                }, 30000)
-            } else {
-                User.updateOne({uniqueID: queue.textChannel.guild.id.toString()}, {queueSize: user["queueSize"] + 1}, function (err) {
-                    if (err) throw err;
-                })
-                queue.textChannel.send({embeds: [playEmbed], components: [songButtons]});
-            }
+            queue.textChannel.send({embeds: [playEmbed], components: [songButtons]});
         }
 
     });
 
 });
+
+distube.on("finishSong", (queue, song) => {
+    User.findOne({uniqueID: queue.textChannel.guild.id.toString()}, function (err, user) {
+        if (err) throw err;
+        if (!user) return;
+
+        if(user) {
+            if(user["queueSize"] >= 5 && user["premium"] === false) {
+                const pauseEmbed = new MessageEmbed()
+                    .setColor("#33BBFF")
+                    .setAuthor(`|  Interruption ... `, client.user.displayAvatarURL({dynamic: true}))
+                    .setDescription(`Interruption **ZoZ® Music** pendant 30 secondes | __Conseil:__ _Aller prendre l'air !_\n\> Buy **Premium ZoZ® License** for non-stop music ${icons.error}`);
+                queue.textChannel.send({embeds: [pauseEmbed]});
+                setTimeout(() => {
+                     queue.pause();
+                }, 5000)
+                setTimeout(() => {
+                    if (queue.paused) distube.resume(queue)
+                    User.updateOne({uniqueID: queue.textChannel.guild.id.toString()}, {queueSize: 1}, function (err) {
+                        if (err) throw err;
+                    })
+                }, 30000)
+                return;
+            }
+            if(user["queueSize"] >= 5 && user["premium"] === true) {
+                User.updateOne({uniqueID: queue.textChannel.guild.id.toString()}, {queueSize: 1}, function (err) {
+                    if (err) throw err;
+                })
+                return;
+            }
+            User.updateOne({uniqueID: queue.textChannel.guild.id.toString()}, {queueSize: user["queueSize"] + 1}, function (err) {
+                if (err) throw err;
+            })
+
+        }
+    });
+})
 
 distube.on("addSong", (queue, song) => {
     queue.autoplay = false;

@@ -29,6 +29,12 @@ module.exports = {
             .setDescription(`\> ${error} ${icons.error}`);
 
         message.reply({embeds: [errorEmbed]})
-    }
+    },
+    sendSuccess: (message, success) => {
+        const errorEmbed = new MessageEmbed()
+            .setColor("#6FFF7C")
+            .setDescription(`\> ${success} ${icons.success}`);
 
+        message.reply({embeds: [errorEmbed]})
+    },
 }
