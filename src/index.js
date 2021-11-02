@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const {SpotifyPlugin} = require("@distube/spotify");
 const DeezerPlugin = require("./utils/deezer");
+const {SoundCloudPlugin} = require("@distube/soundcloud")
 const {User} = require("./store/user/User");
 const {updateExpiry} = require("./utils/utils");
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS]})
@@ -15,6 +16,8 @@ const distube = new DisTube(client, {
         parallel: true,
         emitEventsAfterFetching: false
     }), new DeezerPlugin({
+        parallel: true
+    }), new SoundCloudPlugin(  {
         parallel: true
     })]
 })
@@ -58,7 +61,7 @@ client.on("ready", () => {
     console.log(` - ${client.user.tag} is ready ! Devlopped by : Enzo#5555, Pepito_404#1933, ToooM#3029 `)
     client.user.setPresence({status: "dnd"})
     setInterval(() => {
-        client.user.setActivity(`${client.guilds.cache.size} Servers | ZoZ® Prefix : ${prefix}`, {
+        client.user.setActivity(`${client.guilds.cache.size} Servers`, {
             type: "LISTENING"
         });
     }, 5 * 1000);
@@ -157,13 +160,13 @@ distube.on("searchCancel", () => {
 distube.on("noRelated", (queue) => {
     queue.textChannel.send(`\> ${icons.error} Impossible de trouver la musique liée.`)
 })
-distube.on("finish", (queue) => {
+/*distube.on("finish", (queue) => {
     queue.textChannel.send(`\> Aucune musique, je quitte le salon ${icons.success} !`);
     setTimeout(() => {
         queue.voice.leave();
     }, 4 * 1000)
 
-})
+})*/
 distube.on("empty", channel => channel.send('\> Salon vide, je quitte le salon ' + icons.success + ' !'))
 distube.on("error", (error) => {
     console.log(error)

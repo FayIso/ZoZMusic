@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
     premium: {type: Boolean, default: false},
     password: {type: String, default: ""},
     queueSize: {type: Number, default: 1},
-    expiry: String
+    expiry: String,
+    prefix: {type: String, default: "!"},
 });
 
 module.exports = {
