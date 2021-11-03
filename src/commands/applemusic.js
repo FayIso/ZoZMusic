@@ -3,7 +3,7 @@ const search = require('youtube-search');
 const index = require('../index.js')
 
 module.exports = {
-    name: "am",
+    name: "testapple",
     aliases: ["apple"],
     run: async (client, message, args) => {
 
@@ -11,20 +11,31 @@ module.exports = {
 
         var opts = {
             maxResults: 10,
-            key: 'AIzaSyD3J-tDYt9pKXmTs0UNGIxRpRRxRlulaus'
+            key: 'AIzaSyBak9c17Ng-N2xf8Rl1uCHRb1iB_aN5EJs'
         };
 
         if (url.includes("playlist")) {
-            message.channel.send("**Apple Music Playlist** n'est pas supporté pour le moment | Attendez les prochaines **Mises a Jour**")
+            message.channel.send("\> [TESTING] **Apple Music Playlist** n'est pas supporté pour le moment | Attendez les prochaines **Mises a Jour**")
+            return;
+        } else if (!url || !url.includes("https://music.apple.com/us/album/")) {
+            message.channel.send("\> [TESTING] **Specifié un lien Apple Music valid** ")
             return;
         }
 
-        const song = await getSong(url)
-        console.log(`${song["title"].toString()} by ${song["artist"].toString()}`)
-        search(`${song["title"].toString()} by ${song["artist"].toString()}`, opts, function (err, results) {
-            if (err) return console.log(err);
-            const linkRes = results[0].link
-            index.distube.play(message, linkRes)
-        });
+        try {
+
+            ////////////////// RECHERCHE APPLE MUSIC METADATA  //////////////////
+            const song = await getSong(url)
+            console.log(`${song["title"].toString()} by ${song["artist"].toString()}`)
+
+            ////////////////// RECHERCHE YT  //////////////////
+            search(`${song["title"].toString()} by ${song["artist"].toString()}`, opts, function (err, results) {
+                if (err) return console.log(err);
+                const linkRes = results[0].link
+                index.distube.play(message, linkRes)
+            });
+        } catch (e) {
+            message.channel.send("\> [TESTING] ``ERROR APLM01``")
+        }
     }
 }
