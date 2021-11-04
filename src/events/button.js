@@ -84,7 +84,7 @@ module.exports = async interaction => {
 
                         let gen = new MessageEmbed()
                             .setColor("#66b4ff")
-                            .setDescription(`\> **ZoZ Premium Key :** ${key} \n\> **Expiry** : Lifetime`)
+                            .setDescription(`\> **ZoZ Premium Key :** ${key} \n\> **Expiry** : Monthly`)
                         interaction.reply({embeds: [gen]});
                         interaction.message.delete()
                     }

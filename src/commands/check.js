@@ -3,23 +3,27 @@ const {User} = require("../store/user/User");
 
 module.exports = {
     name: "check",
-    aliases: ["ch"],
+    aliases: ["chk"],
     run: (client, message, args) => {
 
         User.findOne({uniqueID: message.guild.id.toString()}, function (err, user) {
             if (err) throw err;
 
             if (!user) {
-                message.channel.send(`\> ${message.author}, user doesn't exist <:Error:888743744277463141> ...`);
+                message.channel.send(`\> ``ERROR 404`` `);
                 return;
             }
 
             if(user["premium"] === true) {
-                message.channel.send("premium")
+                const expire = user["expiry"].split(".")
+                const days = expire[0]
+                const hours = expire[1]
+                const finalExpiry = `${days} Jours ${hours} Heures`
+                message.channel.send(`\> Ce server a une **License Premium ZoZ®** | Expire: **${finalExpiry}**`)
                 return;
             }
 
-            message.channel.reply("no premium")
+            message.channel.send(`\> Ce server n'a pas de **License Premium ZoZ®** ! `)
 
         });
     },
