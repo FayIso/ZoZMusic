@@ -1,19 +1,13 @@
-const search = require('youtube-search');
+const yt = require('@citoyasha/yt-search');
 const index = require('../index.js')
-const axios = require("axios")
 const {getData} = require("amazon-music-info")
 
 module.exports = {
     name: "testamazonmusic",
-    aliases: ["amazonmusic"],
-    run:  async (client, message, args) => {
+    aliases: ["amazonmusic", "azm"],
+    run: async (client, message, args) => {
 
         const url = args.join(" ")
-
-        var opts = {
-            maxResults: 10,
-            key: 'AIzaSyBak9c17Ng-N2xf8Rl1uCHRb1iB_aN5EJs'
-        };
         let link;
         let trackId;
         let finalLink;
@@ -37,23 +31,35 @@ module.exports = {
             ////////////////// RECHERCHE AMAZON MUSIC METADATA  //////////////////
             getData(finalLink.toString()).then(function (res) {
 
-                let songs = []
+                console.log(res.items.length)
+                if (res.items.length <= 1) {
+                    const title = res.items[0].name.toString();
+                    const artist = res.items[0].artist.toString();
+                    yt.search(`${title} ${artist}`).then(function (result) {
+                        const linkRes = result[0].link
 
-                for (let i = 0; i < res.items.length; i++) {
-                    const title = res.items[i].name.toString();
-                    const artist = res.items[i].artist.toString();
+                        setTimeout(function () {
+                            index.distube.play(message, linkRes)
+                            message.channel.send("\> [TESTING] **Amazon Music** Play! ")
+                        }, 1000)
+                    })
+                } else {
+                    let songs = []
+                    for (let i = 0; i < res.items.length; i++) {
+                        const title = res.items[i].name.toString();
+                        const artist = res.items[i].artist.toString();
 
-                    ////////////////// RECHERCHE YT  //////////////////
-                    search(`${title} ${artist}`, opts, function (err, results) {
-                        const linkRes = results[0].link
-                        songs.push(linkRes)
-
-                    });
+                        ////////////////// RECHERCHE YT  //////////////////
+                        yt.search(`${title} ${artist}`).then(function (result) {
+                            const linkRes = result[0].link
+                            songs.push(linkRes)
+                        });
+                    }
+                    setTimeout(function () {
+                        index.distube.playCustomPlaylist(message, songs)
+                        message.channel.send("\> [TESTING] **Amazon Music** Play! ")
+                    }, 1000)
                 }
-                setTimeout(function() {
-                    index.distube.playCustomPlaylist(message, songs)
-                    message.channel.send("\> [TESTING] **Amazon Music** Play Song Now ! ")
-                }, 5000)
             })
         } catch (e) {
             message.channel.send("\> [TESTING] ``ERROR AMZNM01``")

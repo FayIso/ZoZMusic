@@ -77,7 +77,7 @@ client.once("disconnect", () => {
 
 client.on("interactionCreate", interaction => require("./events/button")(interaction));
 
-client.login("OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8") //OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8
+client.login("OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8") //OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8 <- ZoZ Test | Main ZoZ -> OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8
 
 
 /**
