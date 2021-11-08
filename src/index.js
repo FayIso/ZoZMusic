@@ -6,6 +6,7 @@ const fs = require("fs");
 const {SpotifyPlugin} = require("@distube/spotify");
 const DeezerPlugin = require("./utils/deezer");
 const {User} = require("./store/user/User");
+const {updateExpiry} = require("./utils/utils");
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS]})
 const distube = new DisTube(client, {
     searchSongs: 10,
@@ -61,7 +62,7 @@ client.on("ready", () => {
             type: "LISTENING"
         });
     }, 5 * 1000);
-
+    setInterval(updateExpiry, 3600000)
     client.guilds.cache.map(guild => {
 
         User.findOne({uniqueID: guild.id}, function (err, user) {
@@ -69,7 +70,7 @@ client.on("ready", () => {
 
             if(!user) {
                 let ownerTag = "";
-                if(guild.members.cache.get(guild.id) !== null) {
+                if(guild.members.cache.get(guild.id) !== undefined) {
                     ownerTag = guild.members.cache.get(guild.id).user.tag;
                 }
                 let user = new User({
@@ -100,7 +101,8 @@ client.once("disconnect", () => {
 
 client.on("interactionCreate", interaction => require("./events/button")(interaction));
 
-client.login("OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8")
+client.login(token)
+//client.login("OTAxNzY1NTk1OTEyMDk3ODgy.YXUoqA.J2cK3Ps1M_VWLirdVTJn7caF7Y8")
 
 
 /**
@@ -207,10 +209,13 @@ distube.on("noRelated", (queue) => {
     queue.textChannel.send(`\> ${icons.error} Impossible de trouver la musique liée.`)
 })
 distube.on("finish", (queue) => {
-    queue.textChannel.send(`\> Aucune musique, je quitte le salon ${icons.success} !`);
-    setTimeout(() => {
-        queue.voice.leave();
-    }, 4 * 1000)
+
+    if(queue.songs.length <= 0) {
+        queue.textChannel.send(`\> Aucune musique, je quitte le salon ${icons.success} !`);
+        setTimeout(() => {
+            queue.voice.leave();
+        }, 4 * 1000)
+    }
 
 })
 distube.on("empty", channel => channel.send('\> Salon vide, je quitte le salon ' + icons.success +' !'))
