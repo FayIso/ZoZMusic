@@ -10,7 +10,6 @@ module.exports = {
             if (err) throw err;
 
             if (!user) {
-                message.channel.send(`\> ``ERROR 404`` `);
                 return;
             }
 

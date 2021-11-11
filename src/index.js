@@ -8,6 +8,7 @@ const DeezerPlugin = require("./utils/deezer");
 const {SoundCloudPlugin} = require("@distube/soundcloud")
 const {User} = require("./store/user/User");
 const {updateExpiry} = require("./utils/utils");
+const cron = require("cron")
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS]})
 const distube = new DisTube(client, {
     searchSongs: 10,
@@ -65,7 +66,10 @@ client.on("ready", () => {
             type: "LISTENING"
         });
     }, 5 * 1000);
-    setInterval(updateExpiry, 3600000)
+    let susbcriptionExpiry = new cron.CronJob("0 */1 * * * *", () => {
+        updateExpiry()
+    })
+    susbcriptionExpiry.start()
 })
 client.once("reconnecting", () => {
     console.log(`- ${client.user.tag} reconnexion ...\n- Devlopped by : Enzo#5555, Pepito_404#1933, ToooM#3029\n`);

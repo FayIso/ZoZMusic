@@ -36,6 +36,8 @@ module.exports = {
             if (err) throw err;
             if (!user) return;
 
+            console.log("GOODEST")
+            console.log(user.length)
             for(var i=0; i<user.length; i++)
             {
 
@@ -75,6 +77,4 @@ module.exports = {
             }
         })
     }
-
-
 }
